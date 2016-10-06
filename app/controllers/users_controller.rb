@@ -1,13 +1,13 @@
 class UsersController < ApplicationController
 
   def show
-  	@user = User.find_by params[:id]
-    if @user.valid?
-      redirect_to @user
-    else
-      flash[:danger] = "User doesn't exit"
-      render :new
-    end 
+  	@user = User.find_by id: params[:id]
+    #if @user.valid?
+    # redirect_to @user
+    #else
+    #  flash[:danger] = "User doesn't exit"
+    #  render :new
+    #end 
   end
 
   def new
@@ -24,7 +24,9 @@ class UsersController < ApplicationController
       render :new
     end
   end
-
+    def edit
+      @user = User.find_by id: params[:id]
+    end
    private
 
     def user_params
