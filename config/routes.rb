@@ -17,9 +17,12 @@ Rails.application.routes.draw do
   post "/login", to: "sessions#create"
 
   get "/logout", to: "sessions#destroy"
-  
+
+  get "/account_activations", to: "account_activations#edit"
+
   root "static_pages#home"
 
   resources :users
+  resources :account_activations, only: :edit
 end
 
