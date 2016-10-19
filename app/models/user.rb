@@ -1,9 +1,10 @@
 class User < ActiveRecord::Base
-  
+
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
-  validates :name,  presence: true, length: {maximum: 50}
+  validates :name, presence: true, length: {maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: {maximum: 255},
                     format: {with: VALID_EMAIL_REGEX},
@@ -30,7 +31,7 @@ class User < ActiveRecord::Base
     update_attribute :remember_digest, User.digest(remember_token)
   end
 
-  def authenticated?(attribute, token)
+  def authenticated? attribute, token
     digest = self.send "#{attribute}_digest"
     return false if digest.nil?
     BCrypt::Password.new(digest).is_password?token
@@ -40,6 +41,9 @@ class User < ActiveRecord::Base
     update_attribute :remember_digest, nil
   end
    
+  def current_user? user
+    self == user
+  end
   def activate
     update_attribute activated: true, activated_at: Time.zone.now
   end
@@ -50,8 +54,8 @@ class User < ActiveRecord::Base
 
   def create_reset_digest
     self.reset_token = User.new_token
-    update_attribute :reset_digest, User.digest(reset_token)
-    update_attribute :reset_sent_at, Time.zone.now
+    update_attribute :reset_digest, User.digest(reset_token),
+      :reset_sent_at, Time.zone.now
   end
 
   def send_password_reset_email
@@ -60,6 +64,10 @@ class User < ActiveRecord::Base
 
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+
+  def feed
+    Micropost.where("user_id = ?", id)
   end
 
   private
