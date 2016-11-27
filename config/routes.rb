@@ -1,10 +1,8 @@
 Rails.application.routes.draw do
 
-  get "/users", to: "users#index"
-
   get "/signup", to: "users#new"
 
-  post "signup", to: "users#create"
+  post "/signup", to: "users#create"
 
   get "/help", to: "static_pages#help", as: "help"
 
@@ -18,11 +16,18 @@ Rails.application.routes.draw do
 
   get "/logout", to: "sessions#destroy"
 
-  get "/account_activations", to: "account_activations#edit"
-
   root "static_pages#home"
+
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
 
   resources :users
   resources :account_activations, only: :edit
+  resources :password_resets, except: [:show, :index, :destroy]
+  resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
 end
 

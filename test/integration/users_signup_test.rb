@@ -10,9 +10,9 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     get signup_path
     assert_no_different "User.count" do 
       post users_path, params: { user: { name: "",
-      	                                 email: "user@invalid",
-      	                                 password: "foo",
-      	                                 password_confirmation: "bar" }} 	
+      	email: "user@invalid",
+      	password: "foo",
+      	password_confirmation: "bar" }} 	
     end
     assert_template "user/new"
     assert_select "div#<CSS id for error explanation>"
