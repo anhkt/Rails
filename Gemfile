@@ -4,6 +4,10 @@ gem "rails", "4.2.5.1"
 
 gem "bcrypt", ">=3.1.11"
 
+gem "fog", "1.38.0"
+
+gem "mini_magick"
+
 gem "faker", "1.6.3"
 
 gem "will_paginate", "3.1.0"
